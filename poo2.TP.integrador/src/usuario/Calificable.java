@@ -1,7 +1,7 @@
 package usuario;
 
+import sistema.SitioWebSAT;
+
 public interface Calificable {
-	public Calificacion calificar(Calificable entidad, String comentario, int puntaje, String categoria);
-
+	public void calificar(SitioWebSAT sitioWeb, Calificable entidad, String categoria, int puntaje, String comentario);
 }
-

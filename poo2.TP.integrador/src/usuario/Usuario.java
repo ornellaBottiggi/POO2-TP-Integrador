@@ -1,6 +1,12 @@
 package usuario;
 
-public class Usuario implements Calificable {
+import java.time.LocalDate;
+import java.time.Period;
+
+import sistema.Calificacion;
+import sistema.SitioWebSAT;
+
+abstract class Usuario implements Calificable {
 	private String nombre;
 	private String email;
 	private String telefono;
@@ -34,10 +40,10 @@ public class Usuario implements Calificable {
 		return periodo.getDays();
 	}
 	
-	/*@Override
-    public Calificacion calificar(Calificable entidad, String comentario, int puntaje, String categoria) {
-        return new Calificacion(entidad, this, categoria, puntaje, comentario);
+	@Override
+    public void calificar(SitioWebSAT sitioWeb, Calificable entidad, String categoria, int puntaje, String comentario) {
+		Calificacion calificacion = new Calificacion(entidad, categoria, puntaje, comentario);
+        sitioWeb.registrarCalificacion(calificacion);
     }
-    Mel mira esto q no sabemos con orne :(
-    */
+    
 }

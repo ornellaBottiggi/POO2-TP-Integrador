@@ -1,5 +1,7 @@
 package sistema;
 
+import usuario.Calificable;
+
 public class Calificacion {
 	private Calificable entidadPuntuada;
 	private String categoria;

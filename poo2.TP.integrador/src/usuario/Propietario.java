@@ -1,5 +1,12 @@
 package usuario;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import sistema.SitioWebSAT;
+
 public class Propietario extends Usuario {
 	private List<Inmueble> inmuebles;
 	
@@ -9,27 +16,28 @@ public class Propietario extends Usuario {
 	}
 	
 	public void getInmuebles() {
-		return this.inmuebles
+		return this.inmuebles;
 	}
 	
 	public void agregarInmueble(Inmueble inmueble) {
-		this.getinmuebles.add(inmueble);
+		this.getInmuebles().add(inmueble);
 	}
 	
-	public Publicacion generarPublicacion() {
-		
-	}
-	
-	public int cantidadDeInmueblesAlquilados() {
-      
+	public void generarPublicacion(SitioWebSAT sitioWeb, Inmueble inmueble, LocalTime checkIn, LocalTime checkOut, List<MetodoPago> metodoPago, double precioBase) {
+		Publicacion publicacion = new Publicacion (this, inmueble, checkIn, checkOut, metodoPago, precioBase);
+		sitioWeb.altaDePublicacion(publicacion);	
 	}
 	
 	public List<Inmueble> inmueblesAlquilados(){
-		
+		return this.getInmuebles().stream().filter(inmueble -> inmueble.fueAlquilado()).toList();
 	}
 	
-	public void evaluarReserva(Publicacion, Reserva, boolean) {
-		
+	public int cantidadDeInmueblesAlquilados() {
+		return this.inmueblesAlquilados().size();
+	}
+	
+	public void aprobarReserva(Publicacion publicacion, Reserva reserva) {
+		publicacion.procesarReserva(reserva);
 	}
 }
 
