@@ -18,19 +18,22 @@ public class Inquilino extends Usuario {
 	}
 	
 	public void realizarReserva(Publicacion publicacion, LocalDate fechaInicio, LocalDate fechaFin, MetodoDePago metodoPago) {
+		Inmueble inmuebleReservado = publicacion.getInmueble();
+		Reserva reserva = new Reserva(this, inmuebleReservado, fechaInicio, fechaFin, metodoPago);
+		this.agregarAHistorial(reserva);
+		publicacion.obtenerAprobacionDelPropietario(reserva);
 	}
 	 
 	public void agregarAHistorial(Reserva reserva) {
-	        this.obtenerReservas().add(reserva);
-	}
-	 
-	public List<Reserva> obtenerReservas() {
+	    this.obtenerReservas().add(reserva);
 	}
 	 
 	public List<Reserva> obtenerReservasEnCiudad(String ciudad) {
+		return this.obtenerReservas().stream().filter(reserva -> reserva.estaEnCiudad(ciudad)).toList();
 	}
 	 
 	public Set<String> obtenerCiudadesConReserva() {
+		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).toSet();		
 	}
 	 
 }
