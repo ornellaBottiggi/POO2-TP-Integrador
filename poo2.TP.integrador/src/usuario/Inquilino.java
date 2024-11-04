@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import alquiler.Inmueble;
+import alquiler.Publicacion;
+import alquiler.Reserva;
+import enums.MetodoPago;
+
 public class Inquilino extends Usuario {
 	private List<Reserva> historialReservas;
 	
@@ -17,7 +22,7 @@ public class Inquilino extends Usuario {
 		return this.historialReservas;
 	}
 	
-	public void realizarReserva(Publicacion publicacion, LocalDate fechaInicio, LocalDate fechaFin, MetodoDePago metodoPago) {
+	public void realizarReserva(Publicacion publicacion, LocalDate fechaInicio, LocalDate fechaFin, MetodoPago metodoPago) {
 		Inmueble inmuebleReservado = publicacion.getInmueble();
 		Reserva reserva = new Reserva(this, inmuebleReservado, fechaInicio, fechaFin, metodoPago);
 		this.agregarAHistorial(reserva);

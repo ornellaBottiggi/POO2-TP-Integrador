@@ -5,17 +5,21 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import alquiler.Inmueble;
+import alquiler.Publicacion;
+import alquiler.Reserva;
+import enums.MetodoPago;
 import sistema.SitioWebSAT;
 
 public class Propietario extends Usuario {
 	private List<Inmueble> inmuebles;
 	
 	public Propietario(String nombre, String email, String telefono, LocalDate fechaRegistro) {
-		super(nombre, email, telefono, fechaRegistro)
+		super(nombre, email, telefono, fechaRegistro);
 		this.inmuebles = new ArrayList<Inmueble>();
 	}
 	
-	public void getInmuebles() {
+	public List<Inmueble> getInmuebles() {
 		return this.inmuebles;
 	}
 	

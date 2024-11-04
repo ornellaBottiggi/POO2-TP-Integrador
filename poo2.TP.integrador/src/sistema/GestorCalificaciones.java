@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import usuario.Calificable;
+
 public class GestorCalificaciones {
 	
 	private Map<Calificable, List<Calificacion>> calificacionesEntidades;
