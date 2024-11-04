@@ -6,7 +6,7 @@ import java.time.Period;
 import sistema.Calificacion;
 import sistema.SitioWebSAT;
 
-abstract class Usuario implements Calificable {
+public abstract class Usuario implements Calificable {
 	private String nombre;
 	private String email;
 	private String telefono;

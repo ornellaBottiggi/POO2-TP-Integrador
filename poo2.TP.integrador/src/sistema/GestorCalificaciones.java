@@ -1,5 +1,6 @@
 package sistema;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,6 @@ public class GestorCalificaciones {
 	
 	public void agregarCalificacion(Calificable calificable, Calificacion calificacion) {
 		List<Calificacion> calificaciones = calificacionesEntidades.computeIfAbsent(calificable, k -> new ArrayList<Calificacion>());
-		//ojo!!! puede romper :p
 		calificaciones.add(calificacion);
 	}
 	
@@ -28,10 +28,12 @@ public class GestorCalificaciones {
 		return this.getCalificacionesEntidades().get(calificable);
 	}
 
-	/*public double calcularPromedioGeneral(Calificable calificable) {
+	public double calcularPromedioGeneral(Calificable calificable) {
+		List<Calificacion> calificaciones = getCalificacionesEntidades().get(calificable);
+		return calificaciones.stream().mapToInt(calificacion -> calificacion.getPuntaje()).average().orElse(0.0);
 	}
 	
-	public Map<String, double> calcularPromedioCategorias(Calificable calificable) {
+	/*public Map<String, double> calcularPromedioCategorias(Calificable calificable) {
 	}*/
 
 

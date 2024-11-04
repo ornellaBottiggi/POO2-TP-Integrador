@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import alquiler.Publicacion;
+import busqueda.BusquedaCompuesta;
 import enums.Servicio;
+import usuario.Calificable;
+import usuario.Inquilino;
+import usuario.Usuario;
 
 public class SitioWebSAT {
 	
@@ -67,33 +71,37 @@ public class SitioWebSAT {
 		this.getServicios().add(servicio);
 	}
 	
-	public List<Inquilino> inquilinosQueMasAlquilaron(){
+	public List<Publicacion> buscarPublicaciones(BusquedaCompuesta busqueda) {
+		return busqueda.filtrar(getPublicaciones());
+	}
+	
+	public void registrarCalificacion(Calificable calificable, Calificacion calificacion) {
+		this.getGestorCalificaciones().agregarCalificacion(calificable, calificacion);
 		
 	}
 	
-	public List<Publicacion> publicacionesSinReserva(){
-		
+	/*public List<Inquilino> inquilinosQueMasAlquilaron() {
+	}*/
+	
+	public List<Publicacion> publicacionesSinReserva() {
+		return getPublicaciones().stream().filter(publicacion -> !publicacion.tieneReservas()).toList();
+	}
+	
+	public List<Publicacion> publicacionesConReserva() {
+		return getPublicaciones().stream().filter(publicacion -> publicacion.tieneReservas()).toList();
+	}
+	
+	public int totalPublicaciones() {
+		return getPublicaciones().size();
+	}
+	
+	public int totalPublicacionesConReserva() {
+		return this.publicacionesConReserva().size();
 	}
 	
 	public double tasaDeOcupacion() {
-		
+		return this.totalPublicacionesConReserva() / this.totalPublicaciones();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

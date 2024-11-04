@@ -193,4 +193,8 @@ public class Publicacion {
 		
 		reserva.getInquilino().reintegroPorCancelacion(reintegro);
 	}
+
+	public boolean tieneReservas() {
+		return !getReservasActuales().isEmpty();
+	}
 }

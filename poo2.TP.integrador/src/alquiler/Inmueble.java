@@ -97,4 +97,12 @@ public class Inmueble implements Calificable{
 		throw new RuntimeException("Un inmueble no puede calificar a otros.");
 	}
 
+	public boolean estaUbicadoEn(String ciudadBuscada) {
+		return this.getCiudad().equals(ciudadBuscada);
+	}
+
+	public boolean permiteCantHuespedes(int cantHuespedesBuscada) {
+		return this.getCapacidad() >= cantHuespedesBuscada;
+	}
+
 }
