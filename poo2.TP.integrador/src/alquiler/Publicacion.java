@@ -67,7 +67,7 @@ public class Publicacion {
 		return this.reservasActuales;
 	}
 	
-	public List<Reserva> getListaDeEspera() {
+	public Queue<Reserva> getListaDeEspera() {
 		return this.listaDeEspera;
 	}
 	

@@ -3,6 +3,8 @@ package alquiler;
 import java.time.LocalDate;
 
 import enums.MetodoPago;
+import estados.EstadoReserva;
+import estados.Pendiente;
 import usuario.Inquilino;
 
 public class Reserva {
@@ -60,6 +62,10 @@ public class Reserva {
 	
 	public void registrarFinalizacion() {
 		this.getEstado().finalizar(this);
+	}
+	
+	public boolean puedeCalificarse() {
+		return this.getEstado().permiteCalificaciones();
 	}
 	
 	public boolean seSuperponeCon(LocalDate fechaDesde, LocalDate fechaHasta) {
