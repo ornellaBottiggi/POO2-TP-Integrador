@@ -3,6 +3,7 @@ package usuario;
 import java.time.LocalDate;
 import java.time.Period;
 
+import alquiler.Reserva;
 import sistema.Calificacion;
 import sistema.SitioWebSAT;
 
@@ -41,9 +42,14 @@ public abstract class Usuario implements Calificable {
 	}
 	
 	@Override
-    public void calificar(SitioWebSAT sitioWeb, Calificable entidad, String categoria, int puntaje, String comentario) {
+    public void calificar(SitioWebSAT sitioWeb, Reserva reserva, Calificable entidad, String categoria, int puntaje, String comentario) {
 		Calificacion calificacion = new Calificacion(entidad, categoria, puntaje, comentario);
-        sitioWeb.registrarCalificacion(calificacion);
+		if (reserva.puedeCalificarse()) {
+			sitioWeb.registrarCalificacion(calificacion);
+		} else {
+			throw new RuntimeException ("No se ha finalizado la reserva");
+		}
+		
     }
     
 }

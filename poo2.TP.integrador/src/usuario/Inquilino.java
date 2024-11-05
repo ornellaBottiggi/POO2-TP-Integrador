@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import alquiler.Inmueble;
 import alquiler.Publicacion;
@@ -38,7 +39,7 @@ public class Inquilino extends Usuario {
 	}
 	 
 	public Set<String> obtenerCiudadesConReserva() {
-		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).toSet();		
+		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).collect(Collectors.toSet());		
 	}
 	 
 }
