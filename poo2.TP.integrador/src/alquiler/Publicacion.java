@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 
+import cancelacion.PoliticaCancelacion;
 import enums.MetodoPago;
+import notificacion.Notificador;
+import notificacion.Suscriptor;
 import usuario.Propietario;
 
-public class Publicacion {
+public class Publicacion implements Notificador {
 	private Propietario propietario;
 	private Inmueble inmueble;
 	private LocalTime checkIn;
@@ -22,6 +25,7 @@ public class Publicacion {
 	private List<Reserva> reservasActuales;
 	private Queue<Reserva> listaDeEspera;
 	private PoliticaCancelacion politicaCancelacion;
+	private List<Suscriptor> suscriptores;
 	
 	public Publicacion(Propietario propietario, Inmueble inmueble, LocalTime checkin, LocalTime checkout, List<MetodoPago> formasDePago, double precio) {
 		this.propietario = propietario;
@@ -33,6 +37,7 @@ public class Publicacion {
 		this.preciosTemporada = new ArrayList<PrecioTemporada>();
 		this.reservasActuales = new ArrayList<Reserva>();
 		this.listaDeEspera = new ArrayDeque<Reserva>();
+		this.suscriptores = new ArrayList<Suscriptor>();
 	}
 	
 	public Propietario getPropietario() {
@@ -73,6 +78,10 @@ public class Publicacion {
 	
 	public PoliticaCancelacion getPoliticaCancelacion() {
 		return this.politicaCancelacion;
+	}
+	
+	public List<Suscriptor> getSuscriptores() {
+		return this.suscriptores;
 	}
 	
 	public void setPoliticaCancelacion(PoliticaCancelacion cancelacion) {
@@ -117,8 +126,11 @@ public class Publicacion {
 	*/
 
 	public void cambiarPrecio(double nuevoPrecio) {
+		double precioViejo = this.getPrecioBase();
 		this.setPrecioBase(nuevoPrecio);
-		// notificar !
+		if(nuevoPrecio < precioViejo) {
+			this.notificarSuscriptores("Baja de precio");
+		}
 	}
 	
 	public void obtenerAprobacionDelPropietario(Reserva reserva) {
@@ -148,11 +160,10 @@ public class Publicacion {
 	}
 	
 	public void cancelarReserva(Reserva reserva) {
-		this.realizarReintegro(reserva);
 		reserva.registrarCancelacion();
 		this.eliminarReserva(reserva);
 		this.procesarListaDeEspera(reserva.getFechaInicio(), reserva.getFechaFin());
-		// notificar !
+		this.notificarSuscriptores("Cancelación de reserva");
 	}
 	
 	private void eliminarReserva(Reserva reserva) {
@@ -184,17 +195,28 @@ public class Publicacion {
 		this.getListaDeEspera().removeIf(reserva -> reserva.seSuperponeCon(fechaDesde, fechaHasta));
 	}
 	
-	public void realizarReintegro(Reserva reserva) {
-		LocalDate fechaCancelacion = LocalDate.now();
-		LocalDate fechaInicioReserva = reserva.getFechaInicio();
-		LocalDate fechaFinReserva = reserva.getFechaFin();
-		double precioFinal = this.precioAlquiler(fechaInicioReserva, fechaFinReserva);
-		double reintegro = this.getPoliticaCancelacion().calcularReintegro(fechaCancelacion, fechaInicioReserva, precioFinal);
-		
-		reserva.getInquilino().reintegroPorCancelacion(reintegro);
+	public double retencionPorCancelacion(Reserva reserva) {
+		return this.getPoliticaCancelacion().calcularRetencion(LocalDate.now(), reserva, this);
 	}
 
 	public boolean tieneReservas() {
 		return !getReservasActuales().isEmpty();
+	}
+
+	@Override
+	public void agregarSuscriptor(Suscriptor suscriptor) {
+		this.getSuscriptores().add(suscriptor);
+	}
+
+	@Override
+	public void eliminarSuscriptor(Suscriptor suscriptor) {
+		this.getSuscriptores().remove(suscriptor);		
+	}
+
+	@Override
+	public void notificarSuscriptores(String evento) {
+		for(Suscriptor suscriptor : suscriptores) {
+			suscriptor.actualizar(evento, this);
+		}
 	}
 }
