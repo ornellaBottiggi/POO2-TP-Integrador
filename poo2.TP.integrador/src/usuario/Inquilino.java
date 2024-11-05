@@ -42,4 +42,15 @@ public class Inquilino extends Usuario {
 		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).collect(Collectors.toSet());		
 	}
 	 
+	@Override
+	public boolean esInquilino() {
+		return true;
+	}
+
+	@Override 
+	public int cantidadReservas() {
+		return this.obtenerReservas().size();
+	}
+
+
 }

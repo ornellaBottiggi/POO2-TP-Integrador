@@ -31,7 +31,9 @@ public class Calificacion {
 		return this.comentario;
 	}
 
-
+	public boolean esDeCategoria(String categoria) {
+		return this.getCategoria().equals(categoria);
+	}
 
 }
 	

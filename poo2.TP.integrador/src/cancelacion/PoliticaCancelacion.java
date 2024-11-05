@@ -7,6 +7,6 @@ import alquiler.Reserva;
 
 public interface PoliticaCancelacion {
 	
-	public double calcularRetencion(LocalDate fechaCancelacion, Reserva reserva, Publicacion publicacion) 
+	public double calcularRetencion(LocalDate fechaCancelacion, Reserva reserva, Publicacion publicacion);
 	
 }

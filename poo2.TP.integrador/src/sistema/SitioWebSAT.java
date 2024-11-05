@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import alquiler.Publicacion;
 import busqueda.BusquedaCompuesta;
@@ -80,8 +81,16 @@ public class SitioWebSAT {
 		
 	}
 	
-	/*public List<Inquilino> inquilinosQueMasAlquilaron() {
-	}*/
+	public List<Usuario> topInquilinosQueMasAlquilaron() {
+		List<Usuario> inquilinosOrdenados = this.ordenarInquilinosPorReservas();
+		return inquilinosOrdenados.stream().limit(10).collect(Collectors.toList());
+	}
+	
+	public List<Usuario> ordenarInquilinosPorReservas(){
+		List<Usuario> inquilinos = this.getUsuarios().stream().filter(usuario -> usuario.esInquilino()).toList();
+		inquilinos.sort((inquilino1 , inquilino2) -> Integer.compare(inquilino1.cantidadReservas(), inquilino2.cantidadReservas()));
+		return inquilinos;
+	}
 	
 	public List<Publicacion> publicacionesSinReserva() {
 		return getPublicaciones().stream().filter(publicacion -> !publicacion.tieneReservas()).toList();

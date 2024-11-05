@@ -29,12 +29,25 @@ public class GestorCalificaciones {
 	}
 
 	public double calcularPromedioGeneral(Calificable calificable) {
-		List<Calificacion> calificaciones = getCalificacionesEntidades().get(calificable);
+		List<Calificacion> calificaciones = obtenerCalificaciones(calificable);
 		return calificaciones.stream().mapToInt(calificacion -> calificacion.getPuntaje()).average().orElse(0.0);
 	}
 	
-	/*public Map<String, double> calcularPromedioCategorias(Calificable calificable) {
-	}*/
+	public Map<String, Double> calcularPromedioCategorias(Calificable calificable) {
+		List<Calificacion> calificaciones = obtenerCalificaciones(calificable);
+		Map<String, Double> promedios = new HashMap<String, Double>();
+		for (Calificacion calificacion : calificaciones) {
+			promedios.put(calificacion.getCategoria(), this.calcularPromedioDeCategoria(calificacion.getCategoria(), calificaciones));
+		}
+		return promedios;
+	}
+
+	private Double calcularPromedioDeCategoria(String categoria, List<Calificacion> calificaciones) {
+		return calificaciones.stream()
+				.filter(calificacion -> calificacion.esDeCategoria(categoria))
+				.mapToInt(calificacion -> calificacion.getPuntaje())
+				.average().orElse(0.0);
+	}
 
 
 

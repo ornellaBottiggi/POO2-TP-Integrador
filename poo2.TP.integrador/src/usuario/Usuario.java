@@ -45,11 +45,19 @@ public abstract class Usuario implements Calificable {
     public void calificar(SitioWebSAT sitioWeb, Reserva reserva, Calificable entidad, String categoria, int puntaje, String comentario) {
 		Calificacion calificacion = new Calificacion(entidad, categoria, puntaje, comentario);
 		if (reserva.puedeCalificarse()) {
-			sitioWeb.registrarCalificacion(calificacion);
+			sitioWeb.registrarCalificacion(entidad, calificacion);
 		} else {
 			throw new RuntimeException ("No se ha finalizado la reserva");
 		}
 		
     }
+
+	public boolean esInquilino() {
+		return false;
+	}
+
+	public int cantidadReservas() {
+		return 0;
+	}
     
 }
