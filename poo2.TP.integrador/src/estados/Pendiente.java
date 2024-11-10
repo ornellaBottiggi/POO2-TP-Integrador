@@ -24,4 +24,9 @@ public class Pendiente implements EstadoReserva {
 	public boolean permiteCalificaciones() {
 		return false;
 	}
+
+	@Override
+	public boolean esCancelada() {
+		return false;
+	}
 }

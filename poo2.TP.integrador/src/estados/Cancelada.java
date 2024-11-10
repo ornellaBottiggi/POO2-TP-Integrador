@@ -24,4 +24,9 @@ public class Cancelada implements EstadoReserva {
 		return false;
 	}
 
+	@Override
+	public boolean esCancelada() {
+		return true;
+	}
+
 }

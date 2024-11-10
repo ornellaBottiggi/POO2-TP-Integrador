@@ -8,5 +8,6 @@ public interface EstadoReserva {
 	public void cancelar(Reserva reserva);
 	public void finalizar(Reserva reserva);
 	public boolean permiteCalificaciones();
+	public boolean esCancelada();
 	
 }

@@ -129,7 +129,7 @@ public class Publicacion implements Notificador {
 		double precioViejo = this.getPrecioBase();
 		this.setPrecioBase(nuevoPrecio);
 		if(nuevoPrecio < precioViejo) {
-			this.notificarSuscriptores("Baja de precio");
+			this.notificarBajaDePrecio();
 		}
 	}
 	
@@ -152,7 +152,7 @@ public class Publicacion implements Notificador {
 	
 	private void asentarReserva(Reserva reserva) {
 		this.getReservasActuales().add(reserva);
-		// notificar ? enviar mail ?
+		this.notificarReserva(reserva);
 	}
 	
 	private void agregarAListaDeEspera(Reserva reserva) {
@@ -163,7 +163,7 @@ public class Publicacion implements Notificador {
 		reserva.registrarCancelacion();
 		this.eliminarReserva(reserva);
 		this.procesarListaDeEspera(reserva.getFechaInicio(), reserva.getFechaFin());
-		this.notificarSuscriptores("Cancelación de reserva");
+		this.notificarCancelacionDeReserva(reserva);
 	}
 	
 	private void eliminarReserva(Reserva reserva) {
@@ -196,6 +196,9 @@ public class Publicacion implements Notificador {
 	}
 	
 	public double retencionPorCancelacion(Reserva reserva) {
+		if(!reserva.estaCancelada()) {
+			throw new RuntimeException("La reserva no está cancelada, no se puede calcular la retención."); 
+		}
 		return this.getPoliticaCancelacion().calcularRetencion(LocalDate.now(), reserva, this);
 	}
 
@@ -214,9 +217,23 @@ public class Publicacion implements Notificador {
 	}
 
 	@Override
-	public void notificarSuscriptores(String evento) {
+	public void notificarBajaDePrecio() {
 		for(Suscriptor suscriptor : suscriptores) {
-			suscriptor.actualizar(evento, this);
+	        suscriptor.cambioDePrecio(this, this.getPrecioBase());
+	    }
+	}
+
+	@Override
+	public void notificarCancelacionDeReserva(Reserva reserva) {
+		for(Suscriptor suscriptor : suscriptores) {
+			suscriptor.cancelacionReserva(reserva);
+		}
+	}
+
+	@Override
+	public void notificarReserva(Reserva reserva) {
+		for(Suscriptor suscriptor : suscriptores) {
+			suscriptor.reservaInmueble(reserva);
 		}
 	}
 }

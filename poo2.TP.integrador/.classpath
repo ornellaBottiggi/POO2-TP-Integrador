@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/botti/Downloads/objenesis-3.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/botti/Downloads/mockito-core-5.11.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/botti/Downloads/byte-buddy-1.14.12.jar"/>
-	<classpathentry kind="lib" path="C:/Users/botti/Downloads/byte-buddy-agent-1.14.12.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/meluk/eclipse-workspace/byte-buddy-1.14.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/meluk/eclipse-workspace/byte-buddy-agent-1.14.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/meluk/eclipse-workspace/mockito-core-5.11.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/meluk/eclipse-workspace/objenesis-3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

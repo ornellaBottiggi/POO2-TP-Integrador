@@ -75,4 +75,12 @@ public class Reserva {
 	public boolean estaEnCiudad(String ciudad) {
 		return this.getInmueble().estaUbicadoEn(ciudad);
 	}
+
+	public boolean esPosteriorA(LocalDate fecha) {
+		return this.getFechaInicio().isAfter(fecha);
+	}
+
+	public boolean estaCancelada() {
+		return this.getEstado().esCancelada();
+	}
 }

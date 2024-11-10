@@ -1,6 +1,7 @@
 package notificacion;
 
 import alquiler.Publicacion;
+import alquiler.Reserva;
 
 public class AplicacionMobile implements Suscriptor {
 	private PopUpWindow popUp;
@@ -10,16 +11,20 @@ public class AplicacionMobile implements Suscriptor {
 	}
 	
 	@Override
-	public void actualizar(String evento, Publicacion publicacion) {
-		if (evento.equalsIgnoreCase("cancelación de reserva")) {
-			this.enviarMensaje(publicacion);
-		}
+	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio) {
+		// no está interesado en este evento
 	}
-	
-	private void enviarMensaje(Publicacion publicacion) {
-		String tipoInmueble = publicacion.getInmueble().getTipoInmueble();
+
+	@Override
+	public void cancelacionReserva(Reserva reserva) {
+		String tipoInmueble = reserva.getInmueble().getTipoInmueble();
 		String mensaje = "El/la " + tipoInmueble + " que te interesa se ha liberado! Corre a reservarlo!";
 	    popUp.popUp(mensaje, "red", 12);
+	}
+
+	@Override
+	public void reservaInmueble(Reserva reserva) {
+		// no está interesado en este evento
 	}
 	
 }

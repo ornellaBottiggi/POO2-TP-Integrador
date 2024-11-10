@@ -72,6 +72,10 @@ public class SitioWebSAT {
 		this.getServicios().add(servicio);
 	}
 	
+	public void altaDeTipoDeInmueble(String tipoDeInmueble) {
+		this.getTiposInmuebles().add(tipoDeInmueble);
+	}
+	
 	public List<Publicacion> buscarPublicaciones(BusquedaCompuesta busqueda) {
 		return busqueda.filtrar(getPublicaciones());
 	}
@@ -113,17 +117,3 @@ public class SitioWebSAT {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

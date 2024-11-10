@@ -93,7 +93,7 @@ public class Inmueble implements Calificable{
 	}
 	
 	@Override
-	public void calificar(SitioWebSAT sitioWeb, Calificable entidad, String categoria, int puntaje, String comentario) {
+	public void calificar(SitioWebSAT sitioWeb, Reserva reserva, Calificable entidad, String categoria, int puntaje, String comentario) {
 		throw new RuntimeException("Un inmueble no puede calificar a otros.");
 	}
 

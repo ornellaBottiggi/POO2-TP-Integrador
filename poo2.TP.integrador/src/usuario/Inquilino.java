@@ -41,6 +41,11 @@ public class Inquilino extends Usuario {
 	public Set<String> obtenerCiudadesConReserva() {
 		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).collect(Collectors.toSet());		
 	}
+	
+	public List<Reserva> obtenerReservasFuturas() {
+		LocalDate fechaActual = LocalDate.now();
+		return this.obtenerReservas().stream().filter(reserva -> reserva.esPosteriorA(fechaActual)).toList();
+	}
 	 
 	@Override
 	public boolean esInquilino() {

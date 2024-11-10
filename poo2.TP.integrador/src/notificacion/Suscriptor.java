@@ -1,8 +1,12 @@
 package notificacion;
 
 import alquiler.Publicacion;
+import alquiler.Reserva;
 
 public interface Suscriptor {
-	public void actualizar(String evento, Publicacion publicacion);
+	
+	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio);
+	public void cancelacionReserva(Reserva reserva);
+	public void reservaInmueble(Reserva reserva);
 	
 }
