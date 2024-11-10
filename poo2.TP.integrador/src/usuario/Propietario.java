@@ -43,5 +43,11 @@ public class Propietario extends Usuario {
 	public void aprobarReserva(Publicacion publicacion, Reserva reserva) {
 		publicacion.procesarReserva(reserva);
 	}
+	
+	@Override
+	public boolean esInquilino() {
+		return false;
+	}
+
 }
 

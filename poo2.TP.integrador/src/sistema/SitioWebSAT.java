@@ -91,8 +91,8 @@ public class SitioWebSAT {
 	}
 	
 	public List<Usuario> ordenarInquilinosPorReservas(){
-		List<Usuario> inquilinos = this.getUsuarios().stream().filter(usuario -> usuario.esInquilino()).toList();
-		inquilinos.sort((inquilino1 , inquilino2) -> Integer.compare(inquilino1.cantidadReservas(), inquilino2.cantidadReservas()));
+		List<Usuario> inquilinos = this.getUsuarios().stream().filter(usuario -> usuario.esInquilino()).collect(Collectors.toList());
+		inquilinos.sort((inquilino1 , inquilino2) -> Integer.compare(inquilino2.cantidadReservas(), inquilino1.cantidadReservas()));
 		return inquilinos;
 	}
 	
@@ -113,7 +113,9 @@ public class SitioWebSAT {
 	}
 	
 	public double tasaDeOcupacion() {
-		return this.totalPublicacionesConReserva() / this.totalPublicaciones();
+		int total = this.totalPublicaciones();
+		
+		return (total > 0) ? (this.totalPublicacionesConReserva() / (double) total) * 100 : 0;
 	}
 
 }
