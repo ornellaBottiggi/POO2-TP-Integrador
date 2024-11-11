@@ -58,21 +58,24 @@ class GestorTest {
 	
 	@Test
 	void testCalcularPromedioCategorias() {
+		
+		/*los siguientes when corresponden al "calificacion" del setup*/
 		when(calificacion.getPuntaje()).thenReturn(2);
 		when(calificacion.getCategoria()).thenReturn("Limpieza");
 		when(calificacion.esDeCategoria("Limpieza")).thenReturn(true);
+		
 		Calificacion calificacion1 = mock(Calificacion.class);
-		when(calificacion1.getPuntaje()).thenReturn(2);
+		when(calificacion1.getPuntaje()).thenReturn(4);
 		when(calificacion1.getCategoria()).thenReturn("Limpieza");
 		when(calificacion1.esDeCategoria("Limpieza")).thenReturn(true);
 		
 		gestor.agregarCalificacion(calificable, calificacion1);
 		gestor.agregarCalificacion(calificable, calificacion);
 		
-		Map<String, Double> map = new HashMap<String, Double>();
-		map.put("Limpieza", 2d);
+		Map<String, Double> resultadoEsperado = new HashMap<String, Double>();
+		resultadoEsperado.put("Limpieza", 3d);
 		
-		assertEquals(map , gestor.calcularPromedioCategorias(calificable));
+		assertEquals(resultadoEsperado , gestor.calcularPromedioCategorias(calificable));
 	}
 	
 	
