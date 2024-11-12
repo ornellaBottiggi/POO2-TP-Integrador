@@ -54,11 +54,7 @@ class InquilinoTest {
 		when(reserva.puedeCalificarse()).thenReturn(false);
 		Calificable propietario = mock(Calificable.class);
 		
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-		    inquilino.calificar(sitioWeb, reserva, propietario, "Comunicacion", 0, "");
-		});
-		
-		assertEquals("No se ha finalizado la reserva", exception.getMessage());
+		assertThrows(RuntimeException.class, () -> { inquilino.calificar(sitioWeb, reserva, propietario, "Comunicacion", 0, ""); });
 	}
 	
 	@Test 

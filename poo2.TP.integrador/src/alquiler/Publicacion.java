@@ -98,13 +98,13 @@ public class Publicacion implements Notificador {
 	
 	public double precioAlquiler(LocalDate fechaDesde, LocalDate fechaHasta) {
 		double total = 0;
-		for(LocalDate fecha = fechaDesde; !fecha.isAfter(fechaHasta); fecha.plusDays(1)) {
+		for(LocalDate fecha = fechaDesde; !fecha.isAfter(fechaHasta); fecha = fecha.plusDays(1)) {
 			total += this.calcularPrecioParaFecha(fecha);
 		}
 		return total;
 	}
 	
-	private double calcularPrecioParaFecha(LocalDate fecha) {
+	public double calcularPrecioParaFecha(LocalDate fecha) {
 		double precioFinal = this.getPrecioBase();
 		for(PrecioTemporada precio : preciosTemporada) {
 			if(precio.pertenece(fecha)) {
@@ -188,6 +188,7 @@ public class Publicacion implements Notificador {
 	
 	public void finalizarReserva(Reserva reserva) {
 		reserva.registrarFinalizacion();
+		this.eliminarReserva(reserva);
 		this.limpiarReservasCondicionales(reserva.getFechaInicio(), reserva.getFechaFin());
 	}
 	
