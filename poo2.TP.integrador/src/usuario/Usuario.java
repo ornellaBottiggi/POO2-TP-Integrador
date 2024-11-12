@@ -56,4 +56,5 @@ public abstract class Usuario implements Calificable {
 
 	public abstract int cantidadReservas();
    
+	
 }

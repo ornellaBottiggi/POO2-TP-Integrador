@@ -98,4 +98,5 @@ class PropietarioTest {
 		assertEquals(LocalDate.of(2024, 10, 15), propietario.getFechaRegistro());
 	}
 	
+	
 }

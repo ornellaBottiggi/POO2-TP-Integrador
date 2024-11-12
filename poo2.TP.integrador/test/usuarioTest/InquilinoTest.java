@@ -110,7 +110,6 @@ class InquilinoTest {
 		assertTrue(ciudades.contains("Quilmes"));
 	}
 	
-
 	@Test
 	void testObtenerReservasFuturas() {
 		Reserva reserva1 = mock(Reserva.class);
@@ -137,5 +136,6 @@ class InquilinoTest {
 		
 		assertEquals(0,inquilino.cantidadReservas());
 	}
+	
 	
 }

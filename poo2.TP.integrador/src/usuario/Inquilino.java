@@ -57,5 +57,4 @@ public class Inquilino extends Usuario {
 		return this.obtenerReservas().size();
 	}
 
-
 }

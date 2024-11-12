@@ -53,6 +53,7 @@ public class Propietario extends Usuario {
 	public int cantidadReservas() {
 		return 0;
 	}
+	
 
 }
 
