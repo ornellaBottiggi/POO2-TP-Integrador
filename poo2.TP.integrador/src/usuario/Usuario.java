@@ -54,8 +54,6 @@ public abstract class Usuario implements Calificable {
 
 	public abstract boolean esInquilino();
 
-	public int cantidadReservas() {
-		return 0;
-	}
-    
+	public abstract int cantidadReservas();
+   
 }

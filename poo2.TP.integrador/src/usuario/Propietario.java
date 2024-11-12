@@ -48,6 +48,11 @@ public class Propietario extends Usuario {
 	public boolean esInquilino() {
 		return false;
 	}
+	
+	@Override 
+	public int cantidadReservas() {
+		return 0;
+	}
 
 }
 
