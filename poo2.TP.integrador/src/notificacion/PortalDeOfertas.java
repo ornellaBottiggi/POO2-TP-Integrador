@@ -19,11 +19,11 @@ public class PortalDeOfertas implements Suscriptor {
 
 	@Override
 	public void cancelacionReserva(Reserva reserva) {
-		// no está interesado en este evento
+		System.out.println("no está interesado en este evento");
 	}
 
 	@Override
 	public void reservaInmueble(Reserva reserva) {
-		// no está interesado en este evento
+		System.out.println("no está interesado en este evento");
 	}
 }

@@ -12,7 +12,7 @@ public class AplicacionMobile implements Suscriptor {
 	
 	@Override
 	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio) {
-		// no está interesado en este evento
+		System.out.println("no está interesado en este evento");
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class AplicacionMobile implements Suscriptor {
 
 	@Override
 	public void reservaInmueble(Reserva reserva) {
-		// no está interesado en este evento
+		System.out.println("no está interesado en este evento");
 	}
 	
 }
