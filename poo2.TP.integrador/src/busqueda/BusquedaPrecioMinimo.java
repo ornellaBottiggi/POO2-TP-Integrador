@@ -12,7 +12,7 @@ public class BusquedaPrecioMinimo extends BusquedaSimple {
 
 	@Override
 	public boolean cumpleCondicion(Publicacion publicacion) {
-		return publicacion.getPrecioBase() <= precioBuscado;
+		return publicacion.getPrecioBase() >= precioBuscado;
 	}
 
 }

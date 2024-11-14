@@ -33,10 +33,14 @@ public class BusquedaCompuesta implements CriterioBusqueda {
 	public void eliminarCriterio(CriterioBusqueda criterio) {
 		this.criteriosAdicionales.remove(criterio);
 	}
+	
+	public List<CriterioBusqueda> getCriterios() {
+		return this.criteriosAdicionales;
+	}
 
 	@Override
 	public List<Publicacion> filtrar(List<Publicacion> publicaciones) {
-		List<Publicacion> publicacionesFiltradas = publicaciones;
+		List<Publicacion> publicacionesFiltradas = new ArrayList<>(publicaciones);
 		for (CriterioBusqueda criterio : criteriosAdicionales) {
 			publicacionesFiltradas = criterio.filtrar(publicacionesFiltradas);
 		}
