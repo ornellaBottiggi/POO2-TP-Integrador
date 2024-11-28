@@ -5,6 +5,11 @@ import alquiler.Reserva;
 public class Cancelada implements EstadoReserva {
 
 	@Override
+	public void rechazar(Reserva reserva) {
+		throw new RuntimeException("La reserva ya ha sido cancelada.");		
+	}
+	
+	@Override
 	public void aceptar(Reserva reserva) {
 		throw new RuntimeException("La reserva ya ha sido cancelada.");
 	}
@@ -28,5 +33,5 @@ public class Cancelada implements EstadoReserva {
 	public boolean esCancelada() {
 		return true;
 	}
-
+	
 }

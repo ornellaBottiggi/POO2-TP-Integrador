@@ -18,7 +18,7 @@ import sistema.Calificacion;
 import sistema.GestorCalificaciones;
 import sistema.SitioWebSAT;
 import usuario.Calificable;
-import usuario.Inquilino;
+import usuario.InquilinoClass;
 import usuario.Usuario;
 
 class SitioWebTest {
@@ -36,7 +36,7 @@ class SitioWebTest {
 	
 	@Test
 	void testRegistrarUsuario() {
-		Inquilino inquilino = mock(Inquilino.class);
+		InquilinoClass inquilino = mock(InquilinoClass.class);
 		
 		sitioWeb.registrarUsuario(inquilino);
 		
@@ -98,10 +98,10 @@ class SitioWebTest {
 	
 	@Test
 	void testTopInquilinosQueMasAlquilaron() {
-		Inquilino inquilino1 = mock(Inquilino.class);
+		InquilinoClass inquilino1 = mock(InquilinoClass.class);
 		when(inquilino1.cantidadReservas()).thenReturn(1);
 		when(inquilino1.esInquilino()).thenReturn(true);
-		Inquilino inquilino2 = mock(Inquilino.class);
+		InquilinoClass inquilino2 = mock(InquilinoClass.class);
 		when(inquilino2.cantidadReservas()).thenReturn(2);
 		when(inquilino2.esInquilino()).thenReturn(true);
 		

@@ -16,14 +16,14 @@ import alquiler.Publicacion;
 import alquiler.Reserva;
 import enums.MetodoPago;
 import sistema.SitioWebSAT;
-import usuario.Propietario;
+import usuario.PropietarioClass;
 
 class PropietarioTest {
-	private Propietario propietario;
+	private PropietarioClass propietario;
 		
 	@BeforeEach
 	void setUp() {
-		this.propietario = new Propietario("Silvia", "silvia@gmail.com", "1542385478", LocalDate.of(2024, 10, 15));
+		this.propietario = new PropietarioClass("Silvia", "silvia@gmail.com", "1542385478", LocalDate.of(2024, 10, 15));
 	}
 
 	@Test

@@ -3,6 +3,11 @@ package estados;
 import alquiler.Reserva;
 
 public class Aceptada implements EstadoReserva {
+	
+	@Override
+	public void rechazar(Reserva reserva) {
+		throw new RuntimeException("La reserva ya ha sido aceptada.");
+	}
 
 	@Override
 	public void aceptar(Reserva reserva) {

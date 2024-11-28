@@ -1,65 +1,42 @@
 package sistema;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import usuario.Calificable;
+import java.util.List;
+
+
+import alquiler.Reserva;
+import enums.Entidad;
+
 
 public class GestorCalificaciones {
 	
-	private Map<Calificable, List<Calificacion>> calificacionesEntidades;
+	private SitioWebSAT sitioWeb;
 	
-	public GestorCalificaciones() {
-		this.calificacionesEntidades = new HashMap<Calificable, List<Calificacion>>();
+	public GestorCalificaciones(SitioWebSAT sitioWeb) {
+		this.sitioWeb = sitioWeb;
 	}
 	
-	public Map<Calificable, List<Calificacion>> getCalificacionesEntidades() {
-		return this.calificacionesEntidades;
+	public void validarCalificacion(Calificacion calificacion, Entidad entidad) {
+		Reserva reserva = calificacion.getReserva();
+		String categoria = calificacion.getCategoria();
+		if (!this.cumplenRequisitos(reserva, categoria, entidad)) {
+			throw new RuntimeException("La calificacion no es válida");
+		}
 	}
 	
-	public void agregarCalificacion(Calificable calificable, Calificacion calificacion) {
-		List<Calificacion> calificaciones = calificacionesEntidades.computeIfAbsent(calificable, k -> new ArrayList<Calificacion>());
-		calificaciones.add(calificacion);
+	public boolean cumplenRequisitos(Reserva reservaCalificada, String categoriaCalificada, Entidad entidad) {
+		return reservaCalificada.puedeCalificarse() & this.sitioWeb.esCategoriaValida(categoriaCalificada, entidad);
 	}
 	
-	public List<Calificacion> obtenerCalificaciones(Calificable calificable){
-		return this.getCalificacionesEntidades().get(calificable);
-	}
-
-	public double calcularPromedioGeneral(Calificable calificable) {
-		List<Calificacion> calificaciones = obtenerCalificaciones(calificable);
+	public double calcularPromedioGeneral(List<Calificacion> calificaciones) {
 		return calificaciones.stream().mapToInt(calificacion -> calificacion.getPuntaje()).average().orElse(0.0);
 	}
 	
-	public Map<String, Double> calcularPromedioCategorias(Calificable calificable) {
-		List<Calificacion> calificaciones = obtenerCalificaciones(calificable);
-		Map<String, Double> promedios = new HashMap<String, Double>();
-		for (Calificacion calificacion : calificaciones) {
-			promedios.put(calificacion.getCategoria(), this.calcularPromedioDeCategoria(calificacion.getCategoria(), calificaciones));
-		}
-		return promedios;
-	}
-
-	private Double calcularPromedioDeCategoria(String categoria, List<Calificacion> calificaciones) {
+	public double calcularPromedioDeCategoria(String categoria, List<Calificacion> calificaciones) {
 		return calificaciones.stream()
 				.filter(calificacion -> calificacion.esDeCategoria(categoria))
 				.mapToInt(calificacion -> calificacion.getPuntaje())
 				.average().orElse(0.0);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
 }

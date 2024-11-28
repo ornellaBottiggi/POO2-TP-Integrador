@@ -5,6 +5,11 @@ import alquiler.Reserva;
 public class Pendiente implements EstadoReserva {
 
 	@Override
+	public void rechazar(Reserva reserva) {
+		reserva.setEstado(new Rechazada());
+	}
+	
+	@Override
 	public void aceptar(Reserva reserva) {
 		reserva.getInmueble().incrementarVecesAlquilado();
 		reserva.setEstado(new Aceptada());
@@ -29,4 +34,5 @@ public class Pendiente implements EstadoReserva {
 	public boolean esCancelada() {
 		return false;
 	}
+
 }

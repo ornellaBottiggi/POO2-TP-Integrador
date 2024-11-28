@@ -1,40 +1,36 @@
 package sistema;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import alquiler.Publicacion;
 import busqueda.BusquedaCompuesta;
+import enums.Entidad;
 import enums.Servicio;
-import usuario.Calificable;
-import usuario.Inquilino;
 import usuario.Usuario;
 
 public class SitioWebSAT {
 	
-	private GestorCalificaciones gestorCalificaciones;
-	private List<String> categorias;
 	private Set<Usuario> usuarios;
 	private List<Publicacion> publicaciones;
 	private List<String> tiposInmuebles;
 	private List<Servicio> servicios;
+	private Map<Entidad, List<String>> categoriasEntidades;
 	
 	
-	public SitioWebSAT(GestorCalificaciones gestor) {
-		this.gestorCalificaciones = gestor;
-		this.categorias = new ArrayList<String>();
+	public SitioWebSAT() {
 		this.usuarios = new HashSet<Usuario>();
 		this.publicaciones = new ArrayList<Publicacion>();
 		this.tiposInmuebles = new ArrayList<String>();
 		this.servicios = new ArrayList<Servicio>();
+		this.categoriasEntidades = new HashMap<Entidad, List<String>>();
 	}
 	
-	public GestorCalificaciones getGestorCalificaciones() {
-		return this.gestorCalificaciones;
-	}
 	
 	public Set<Usuario> getUsuarios() {
 		return this.usuarios;
@@ -52,8 +48,8 @@ public class SitioWebSAT {
 		return this.servicios;
 	}
 	
-	public List<String> getCategorias(){
-		return this.categorias;
+	public Map<Entidad, List<String>> getCategoriasEntidades(){
+		return this.categoriasEntidades;
 	}
 	
 	public void registrarUsuario(Usuario usuario) {
@@ -64,8 +60,14 @@ public class SitioWebSAT {
 		this.getPublicaciones().add(publicacion);
 	}
 
-	public void altaDeCategoria(String categoria) {
-		this.getCategorias().add(categoria);
+	public void altaDeCategoria(String categoria, Entidad entidad) {
+		List<String> categorias = categoriasEntidades.computeIfAbsent(entidad, k -> new ArrayList<String>());
+		categorias.add(categoria);
+	}
+	
+	public boolean esCategoriaValida(String categoria, Entidad entidad) {
+		List<String> categorias = categoriasEntidades.get(entidad);
+		return categorias.contains(categoria);
 	}
 	
 	public void altaDeServicio(Servicio servicio) {
@@ -80,18 +82,13 @@ public class SitioWebSAT {
 		return busqueda.filtrar(getPublicaciones());
 	}
 	
-	public void registrarCalificacion(Calificable calificable, Calificacion calificacion) {
-		this.getGestorCalificaciones().agregarCalificacion(calificable, calificacion);
-		
-	}
-	
 	public List<Usuario> topInquilinosQueMasAlquilaron() {
 		List<Usuario> inquilinosOrdenados = this.ordenarInquilinosPorReservas();
 		return inquilinosOrdenados.stream().limit(10).collect(Collectors.toList());
 	}
 	
 	public List<Usuario> ordenarInquilinosPorReservas(){
-		List<Usuario> inquilinos = this.getUsuarios().stream().filter(usuario -> usuario.esInquilino()).collect(Collectors.toList());
+		List<Usuario> inquilinos = this.getUsuarios().stream().filter(usuario -> usuario.tieneReservas()).collect(Collectors.toList());
 		inquilinos.sort((inquilino1 , inquilino2) -> Integer.compare(inquilino2.cantidadReservas(), inquilino1.cantidadReservas()));
 		return inquilinos;
 	}

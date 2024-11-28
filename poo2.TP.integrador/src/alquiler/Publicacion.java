@@ -14,6 +14,7 @@ import notificacion.Notificador;
 import notificacion.Suscriptor;
 import usuario.Propietario;
 
+
 public class Publicacion implements Notificador {
 	private Propietario propietario;
 	private Inmueble inmueble;
@@ -133,15 +134,15 @@ public class Publicacion implements Notificador {
 		}
 	}
 	
-	public void obtenerAprobacionDelPropietario(Reserva reserva) {
-		this.getPropietario().aprobarReserva(this, reserva);
+	public void rechazarReserva(Reserva reserva) {
+		reserva.registrarRechazo();
 	}
 	
 	public boolean estaDisponible(LocalDate fechaDesde, LocalDate fechaHasta) {
 		return this.getReservasActuales().stream().noneMatch(reserva -> reserva.seSuperponeCon(fechaDesde, fechaHasta));
 	}
 	
-	public void procesarReserva(Reserva reserva) {
+	public void aceptarReserva(Reserva reserva) {
 		if(this.estaDisponible(reserva.getFechaInicio(), reserva.getFechaFin())) {
 			this.asentarReserva(reserva);
 			reserva.registrarOcupacion();
@@ -159,11 +160,12 @@ public class Publicacion implements Notificador {
 		this.getListaDeEspera().add(reserva);
 	}
 	
-	public void cancelarReserva(Reserva reserva) {
+	public double cancelarReserva(Reserva reserva) {
 		reserva.registrarCancelacion();
 		this.eliminarReserva(reserva);
 		this.procesarListaDeEspera(reserva.getFechaInicio(), reserva.getFechaFin());
 		this.notificarCancelacionDeReserva(reserva);
+		return this.retencionPorCancelacion(reserva);
 	}
 	
 	private void eliminarReserva(Reserva reserva) {
@@ -197,9 +199,6 @@ public class Publicacion implements Notificador {
 	}
 	
 	public double retencionPorCancelacion(Reserva reserva) {
-		if(!reserva.estaCancelada()) {
-			throw new RuntimeException("La reserva no está cancelada, no se puede calcular la retención."); 
-		}
 		return this.getPoliticaCancelacion().calcularRetencion(LocalDate.now(), reserva, this);
 	}
 
@@ -220,7 +219,7 @@ public class Publicacion implements Notificador {
 	@Override
 	public void notificarBajaDePrecio() {
 		for(Suscriptor suscriptor : suscriptores) {
-	        suscriptor.cambioDePrecio(this, this.getPrecioBase());
+	        suscriptor.cambioDePrecio(this);
 	    }
 	}
 

@@ -12,18 +12,18 @@ import alquiler.Inmueble;
 import alquiler.Reserva;
 import enums.MetodoPago;
 import estados.EstadoReserva;
-import usuario.Inquilino;
+import usuario.InquilinoClass;
 
 class ReservaTest {
 	private Reserva reserva;
 	private EstadoReserva pendiente;
 	private Inmueble inmueble;
-	private Inquilino inquilino;
+	private InquilinoClass inquilino;
 	private MetodoPago efectivo;
 
 	@BeforeEach
 	void setUp() {
-		inquilino = mock(Inquilino.class);
+		inquilino = mock(InquilinoClass.class);
 		inmueble = mock(Inmueble.class);
 		efectivo = mock(MetodoPago.class);
 		// mock para poder testear que le llegan los mensajes al estado de la reserva.

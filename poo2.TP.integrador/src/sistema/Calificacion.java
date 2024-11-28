@@ -1,22 +1,22 @@
 package sistema;
 
-import usuario.Calificable;
+import alquiler.Reserva;
 
 public class Calificacion {
-	private Calificable entidadPuntuada;
+	private Reserva reservaCalificada;
 	private String categoria;
 	private int puntaje;
 	private String comentario;
 	
-	public Calificacion(Calificable entidad, String categoria, int puntaje, String comentario) {
-		this.entidadPuntuada = entidad;
+	public Calificacion(Reserva reservaCalificada, String categoria, int puntaje, String comentario) {
+		this.reservaCalificada = reservaCalificada;
 		this.categoria = categoria;
 		this.puntaje = puntaje;
 		this.comentario = comentario;
 	}
 	
-	public Calificable getEntidadPuntuada() {
-		return this.entidadPuntuada;
+	public Reserva getReserva() {
+		return this.reservaCalificada;
 	}
 	
 	public String getCategoria() {

@@ -2,22 +2,39 @@ package usuario;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import alquiler.Inmueble;
 import alquiler.Reserva;
+import enums.Entidad;
 import sistema.Calificacion;
+import sistema.GestorCalificaciones;
 import sistema.SitioWebSAT;
 
-public abstract class Usuario implements Calificable {
+public class Usuario implements Propietario, Inquilino {
 	private String nombre;
 	private String email;
 	private String telefono;
 	private LocalDate fechaRegistro;
-
-	public Usuario(String nombre, String email, String telefono, LocalDate fechaRegistro) {
+	private List<Inmueble> inmuebles;
+	private List<Reserva> historialReservas;
+	private GestorCalificaciones gestorCalificaciones;
+	private List<Calificacion> calificacionesPropietario;
+	private List<Calificacion> calificacionesInquilino;
+	
+	public Usuario(String nombre, String email, String telefono, LocalDate fechaRegistro, GestorCalificaciones gestorCalificaciones) {
 		 this.nombre = nombre;
 	     this.email = email;
 	     this.telefono = telefono;
 	     this.fechaRegistro = fechaRegistro;
+	     this.inmuebles = new ArrayList<Inmueble>();
+	     this.historialReservas = new ArrayList<Reserva>();
+	     this.gestorCalificaciones = gestorCalificaciones;
+	     this.calificacionesPropietario = new ArrayList<Calificacion>();
+	     this.calificacionesInquilino = new ArrayList<Calificacion>();
 	}
 	
 	public String getNombre() {
@@ -41,20 +58,77 @@ public abstract class Usuario implements Calificable {
 		return periodo.getDays();
 	}
 	
+	//Inquilino
+	
 	@Override
-    public void calificar(SitioWebSAT sitioWeb, Reserva reserva, Calificable entidad, String categoria, int puntaje, String comentario) {
-		Calificacion calificacion = new Calificacion(entidad, categoria, puntaje, comentario);
-		if (reserva.puedeCalificarse()) {
-			sitioWeb.registrarCalificacion(entidad, calificacion);
-		} else {
-			throw new RuntimeException ("No se ha finalizado la reserva");
-		}
+	public void agregarReserva(Reserva reserva) {
+		 this.getReservas().add(reserva);
+
+	}
+
+	@Override
+	public List<Reserva> getReservas() {
+		return this.historialReservas;
+	}
+
+	@Override
+	public List<Reserva> obtenerReservasFuturas() {
+		LocalDate fechaActual = LocalDate.now();
+		return this.getReservas().stream().filter(reserva -> reserva.esPosteriorA(fechaActual)).toList();
+	}
+
+	@Override
+	public List<Reserva> obtenerReservasEnCiudad(String ciudad) {
+		return this.getReservas().stream().filter(reserva -> reserva.estaEnCiudad(ciudad)).toList();
+	}
+
+	@Override
+	public Set<String> obtenerCiudadesConReserva() {
+		return this.getReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).collect(Collectors.toSet());		
+	}
+
+	@Override
+	public int cantidadReservas() {
+		return this.getReservas().size();
+	}
+	
+	@Override
+	public void agregarCalificacionInquilino(Calificacion calificacion) {
+		gestorCalificaciones.validarCalificacion(calificacion, Entidad.INQUILINO);
+		calificacionesInquilino.add(calificacion);	
+	}
+	
+	//Propietario
+
+	@Override
+	public void agregarInmueble(Inmueble inmueble) {
+		this.getInmuebles().add(inmueble);
 		
-    }
+	}
 
-	public abstract boolean esInquilino();
+	@Override
+	public int cantidadInmueblesAlquilados() {
+		return this.inmueblesAlquilados().size();
+	}
 
-	public abstract int cantidadReservas();
-   
+	@Override
+	public List<Inmueble> inmueblesAlquilados() {
+		return this.getInmuebles().stream().filter(inmueble -> inmueble.fueAlquilado()).toList();
+	}
+
+	@Override
+	public List<Inmueble> getInmuebles() {
+		return this.inmuebles;
+	}
+
+	@Override
+	public void agregarCalificacionPropietario(Calificacion calificacion) {
+		gestorCalificaciones.validarCalificacion(calificacion, Entidad.PROPIETARIO);
+		calificacionesPropietario.add(calificacion);		
+	}
+
+	public boolean tieneReservas() {
+		return !historialReservas.isEmpty();
+	} 
 	
 }

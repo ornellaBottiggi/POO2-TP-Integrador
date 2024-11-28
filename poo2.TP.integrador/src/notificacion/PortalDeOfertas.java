@@ -11,7 +11,8 @@ public class PortalDeOfertas implements Suscriptor {
 	}
 	
 	@Override
-	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio) {
+	public void cambioDePrecio(Publicacion publicacion) {
+		double nuevoPrecio = publicacion.getPrecioBase();
 		String tipoInmueble = publicacion.getInmueble().getTipoInmueble();
 		String mensaje = "No te pierdas esta oferta: Un inmueble " + tipoInmueble + " a tan solo " + nuevoPrecio + " pesos.";
 		publisher.publish(mensaje);

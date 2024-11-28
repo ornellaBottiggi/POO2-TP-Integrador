@@ -17,14 +17,14 @@ import enums.MetodoPago;
 import sistema.Calificacion;
 import sistema.SitioWebSAT;
 import usuario.Calificable;
-import usuario.Inquilino;
+import usuario.InquilinoClass;
 
 class InquilinoTest {
-	 private Inquilino inquilino;
+	 private InquilinoClass inquilino;
 	 	
 	@BeforeEach
 	void setUp() {
-		this.inquilino = new Inquilino("Raul", "raul@gmail.com", "1165143349", LocalDate.now());
+		this.inquilino = new InquilinoClass("Raul", "raul@gmail.com", "1165143349", LocalDate.now());
 	}
 	
 	@Test

@@ -1,60 +1,18 @@
 package usuario;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import alquiler.Inmueble;
-import alquiler.Publicacion;
 import alquiler.Reserva;
-import enums.MetodoPago;
+import sistema.Calificacion;
 
-public class Inquilino extends Usuario {
-	private List<Reserva> historialReservas;
+public interface Inquilino {
+	public void agregarReserva(Reserva reserva);
+	public List<Reserva> getReservas();
+	public List<Reserva> obtenerReservasFuturas();
+	public List<Reserva> obtenerReservasEnCiudad(String ciudad);
+	public Set<String> obtenerCiudadesConReserva();
+	public int cantidadReservas();
+	public void agregarCalificacionInquilino(Calificacion calificacion);
 	
-	public Inquilino(String nombre, String email, String telefono, LocalDate fechaRegistro) {
-        super(nombre, email, telefono, fechaRegistro);
-        this.historialReservas = new ArrayList<Reserva>();
-    }
-	
-	public List<Reserva> obtenerReservas() {
-		return this.historialReservas;
-	}
-	
-	public void realizarReserva(Publicacion publicacion, LocalDate fechaInicio, LocalDate fechaFin, MetodoPago metodoPago) {
-		Inmueble inmuebleReservado = publicacion.getInmueble();
-		Reserva reserva = new Reserva(this, inmuebleReservado, fechaInicio, fechaFin, metodoPago);
-		this.agregarAHistorial(reserva);
-		publicacion.obtenerAprobacionDelPropietario(reserva);
-	}
-	 
-	public void agregarAHistorial(Reserva reserva) {
-	    this.obtenerReservas().add(reserva);
-	}
-	 
-	public List<Reserva> obtenerReservasEnCiudad(String ciudad) {
-		return this.obtenerReservas().stream().filter(reserva -> reserva.estaEnCiudad(ciudad)).toList();
-	}
-	 
-	public Set<String> obtenerCiudadesConReserva() {
-		return this.obtenerReservas().stream().map(reserva -> reserva.getInmueble().getCiudad()).collect(Collectors.toSet());		
-	}
-	
-	public List<Reserva> obtenerReservasFuturas() {
-		LocalDate fechaActual = LocalDate.now();
-		return this.obtenerReservas().stream().filter(reserva -> reserva.esPosteriorA(fechaActual)).toList();
-	}
-	 
-	@Override
-	public boolean esInquilino() {
-		return true;
-	}
-
-	@Override 
-	public int cantidadReservas() {
-		return this.obtenerReservas().size();
-	}
-
 }

@@ -5,11 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import enums.Entidad;
 import enums.Servicio;
-import sistema.SitioWebSAT;
-import usuario.Calificable;
+import sistema.Calificacion;
+import sistema.GestorCalificaciones;
 
-public class Inmueble implements Calificable{
+public class Inmueble {
 	private String tipoInmueble;
 	private double superficie;
 	private String pais;
@@ -19,8 +20,10 @@ public class Inmueble implements Calificable{
 	private int capacidad;
 	private List<String> fotos;
 	private int vecesAlquilado;
-
-	public Inmueble(String tipo, double superficie, String pais, String ciudad, String direccion, int capacidad) {
+	private List<Calificacion> calificaciones;
+	private GestorCalificaciones gestorCalificaciones;
+	
+	public Inmueble(String tipo, double superficie, String pais, String ciudad, String direccion, int capacidad, GestorCalificaciones gestor) {
 		this.tipoInmueble = tipo;
 		this.superficie = superficie;
 		this.pais = pais;
@@ -30,6 +33,8 @@ public class Inmueble implements Calificable{
 		this.capacidad = capacidad;
 		this.fotos = new ArrayList<String>();
 		this.vecesAlquilado = 0;
+		this.calificaciones = new ArrayList<Calificacion>();
+		this.gestorCalificaciones = gestor;
 	}
 	
 	public String getTipoInmueble() {
@@ -92,17 +97,17 @@ public class Inmueble implements Calificable{
 		this.vecesAlquilado++;
 	}
 	
-	@Override
-	public void calificar(SitioWebSAT sitioWeb, Reserva reserva, Calificable entidad, String categoria, int puntaje, String comentario) {
-		throw new RuntimeException("Un inmueble no puede calificar a otros.");
-	}
-
 	public boolean estaUbicadoEn(String ciudadBuscada) {
 		return this.getCiudad().equals(ciudadBuscada);
 	}
 
 	public boolean permiteCantHuespedes(int cantHuespedesBuscada) {
 		return this.getCapacidad() >= cantHuespedesBuscada;
+	}
+	
+	public void agregarCalificacion(Calificacion calificacion) {
+		this.gestorCalificaciones.validarCalificacion(calificacion, Entidad.INMUEBLE);
+		calificaciones.add(calificacion);
 	}
 
 }

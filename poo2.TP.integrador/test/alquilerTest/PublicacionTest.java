@@ -20,11 +20,11 @@ import cancelacion.CancelacionGratuita;
 import cancelacion.PoliticaCancelacion;
 import enums.MetodoPago;
 import notificacion.Suscriptor;
-import usuario.Propietario;
+import usuario.PropietarioClass;
 
 class PublicacionTest {
 	private Publicacion publicacion;
-	private Propietario propietario;
+	private PropietarioClass propietario;
 	private Inmueble inmueble;
 	private List<MetodoPago> formasDePago;
 	private Reserva reservaActual;
@@ -32,7 +32,7 @@ class PublicacionTest {
 
 	@BeforeEach
 	void setUp() {
-		propietario = mock(Propietario.class);
+		propietario = mock(PropietarioClass.class);
 		inmueble = mock(Inmueble.class);
 		formasDePago = Arrays.asList(mock(MetodoPago.class));
 		

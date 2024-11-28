@@ -52,6 +52,10 @@ public class Reserva {
 		this.estado = estadoNuevo;
 	}
 	
+	public void registrarRechazo() {
+		this.getEstado().rechazar(this);
+	}
+	
 	public void registrarOcupacion() {
 		this.getEstado().aceptar(this);
 	}

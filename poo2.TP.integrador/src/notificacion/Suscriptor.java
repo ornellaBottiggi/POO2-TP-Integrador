@@ -5,7 +5,7 @@ import alquiler.Reserva;
 
 public interface Suscriptor {
 	
-	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio);
+	public void cambioDePrecio(Publicacion publicacion);
 	public void cancelacionReserva(Reserva reserva);
 	public void reservaInmueble(Reserva reserva);
 	

@@ -11,7 +11,7 @@ public class AplicacionMobile implements Suscriptor {
 	}
 	
 	@Override
-	public void cambioDePrecio(Publicacion publicacion, double nuevoPrecio) {
+	public void cambioDePrecio(Publicacion publicacion) {
 		System.out.println("no está interesado en este evento");
 	}
 
