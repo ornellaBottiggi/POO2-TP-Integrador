@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import alquiler.Publicacion;
 import busqueda.BusquedaCompuesta;
+import enums.Entidad;
 import enums.Servicio;
 
 import static org.mockito.Mockito.*;
@@ -15,32 +16,26 @@ import java.util.Arrays;
 import java.util.List;
 
 import sistema.Calificacion;
-import sistema.GestorCalificaciones;
 import sistema.SitioWebSAT;
-import usuario.Calificable;
-import usuario.InquilinoClass;
 import usuario.Usuario;
 
 class SitioWebTest {
 	
-	private SitioWebSAT sitioWeb;
-	private GestorCalificaciones gestor;
-	
+	private SitioWebSAT sitioWeb;	
 	
 	@BeforeEach
 	void setUp() {
-		this.gestor = mock(GestorCalificaciones.class);
-		this.sitioWeb = new SitioWebSAT(gestor);
+		this.sitioWeb = new SitioWebSAT();
 	}
 
 	
 	@Test
 	void testRegistrarUsuario() {
-		InquilinoClass inquilino = mock(InquilinoClass.class);
+		Usuario usuario= mock(Usuario.class);
 		
-		sitioWeb.registrarUsuario(inquilino);
+		sitioWeb.registrarUsuario(usuario);
 		
-		assertTrue(sitioWeb.getUsuarios().contains(inquilino));
+		assertTrue(sitioWeb.getUsuarios().contains(usuario));
 	}
 	
 	@Test
@@ -53,13 +48,19 @@ class SitioWebTest {
 	}
 
 	@Test
-	void testAltaDeCategoria() {
+	void testAltaDeCategoria() {	
+		sitioWeb.altaDeCategoria("Limpieza", Entidad.INMUEBLE);
 		
-		sitioWeb.altaDeCategoria("Limpieza");
-		
-		assertTrue(sitioWeb.getCategorias().contains("Limpieza"));
+		assertTrue(sitioWeb.getCategoriasEntidades().containsKey(Entidad.INMUEBLE));
 	}
 
+	@Test
+	void testCategoriaValida() {
+		sitioWeb.altaDeCategoria("Limpieza", Entidad.INMUEBLE);
+		
+		assertTrue(sitioWeb.esCategoriaValida("Limpieza", Entidad.INMUEBLE));
+	}
+	
 	@Test
 	void testAltaDeServicio() {
 		Servicio servicioWIFI = mock(Servicio.class);
@@ -85,25 +86,15 @@ class SitioWebTest {
 		
 		verify(busqueda, times(1)).filtrar(anyList());
 	}
-
-	@Test
-	void testRegistrarCalificacion() {
-		Calificable calificable = mock(Calificable.class);
-		Calificacion calificacion = mock(Calificacion.class);
-	
-		sitioWeb.registrarCalificacion(calificable, calificacion);
-		
-		verify(gestor, times(1)).agregarCalificacion(calificable, calificacion);
-	}
 	
 	@Test
 	void testTopInquilinosQueMasAlquilaron() {
-		InquilinoClass inquilino1 = mock(InquilinoClass.class);
+		Usuario inquilino1 = mock(Usuario.class);
 		when(inquilino1.cantidadReservas()).thenReturn(1);
-		when(inquilino1.esInquilino()).thenReturn(true);
-		InquilinoClass inquilino2 = mock(InquilinoClass.class);
+		when(inquilino1.tieneReservas()).thenReturn(true);
+		Usuario inquilino2 = mock(Usuario.class);
 		when(inquilino2.cantidadReservas()).thenReturn(2);
-		when(inquilino2.esInquilino()).thenReturn(true);
+		when(inquilino2.tieneReservas()).thenReturn(true);
 		
 		sitioWeb.registrarUsuario(inquilino1);
 		sitioWeb.registrarUsuario(inquilino2);

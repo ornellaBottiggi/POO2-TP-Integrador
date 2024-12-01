@@ -1,59 +1,61 @@
 package estadosTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import alquiler.Reserva;
-import estados.Cancelada;
 import estados.EstadoReserva;
+import estados.Rechazada;
 
-class CanceladaTest {
-	private EstadoReserva cancelada;
+class RechazadaTest {
+
+	private EstadoReserva rechazada;
 
 	@BeforeEach
 	void setUp() {
-		cancelada = new Cancelada();
+		rechazada = new Rechazada();
 	}
 
 	@Test
 	void testRechazarReserva() {
 		Reserva reserva = mock(Reserva.class);
 	
-		assertThrows(RuntimeException.class, () -> { cancelada.rechazar(reserva); });
+		assertThrows(RuntimeException.class, () -> { rechazada.rechazar(reserva); });
 	}
 	
 	@Test
 	void testAceptarReserva() {
 		Reserva reserva = mock(Reserva.class);
 		
-		assertThrows(RuntimeException.class, () -> { cancelada.aceptar(reserva); });
+		assertThrows(RuntimeException.class, () -> { rechazada.aceptar(reserva); });
 	}
 	
 	@Test
 	void testCancelarReserva() {
 		Reserva reserva = mock(Reserva.class);
 		
-		assertThrows(RuntimeException.class, () -> { cancelada.cancelar(reserva); });
+		assertThrows(RuntimeException.class, () -> { rechazada.cancelar(reserva); });
 	}
 	
 	@Test
 	void testFinalizarReserva() {
 		Reserva reserva = mock(Reserva.class);
 		
-		assertThrows(RuntimeException.class, () -> { cancelada.finalizar(reserva); });
+		assertThrows(RuntimeException.class, () -> { rechazada.finalizar(reserva); });
 	}
 	
 	@Test
 	void testPermiteCalificaciones() {
-		assertFalse(cancelada.permiteCalificaciones());
+		assertFalse(rechazada.permiteCalificaciones());
 	}
 	
 	@Test
 	void testSabeSiEsCancelada() {
-		assertTrue(cancelada.esCancelada());
+		assertFalse(rechazada.esCancelada());
 	}
+	
 
 }

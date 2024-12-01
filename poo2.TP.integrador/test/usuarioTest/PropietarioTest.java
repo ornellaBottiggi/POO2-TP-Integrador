@@ -4,26 +4,26 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import alquiler.Inmueble;
-import alquiler.Publicacion;
-import alquiler.Reserva;
-import enums.MetodoPago;
-import sistema.SitioWebSAT;
-import usuario.PropietarioClass;
+import enums.Entidad;
+import sistema.Calificacion;
+import sistema.GestorCalificaciones;
+import usuario.Propietario;
+import usuario.Usuario;
 
 class PropietarioTest {
-	private PropietarioClass propietario;
-		
+	private Propietario propietario;
+	private GestorCalificaciones gestor;
+	
 	@BeforeEach
 	void setUp() {
-		this.propietario = new PropietarioClass("Silvia", "silvia@gmail.com", "1542385478", LocalDate.of(2024, 10, 15));
+		gestor = mock(GestorCalificaciones.class);
+		this.propietario = new Usuario("Silvia", "silvia@gmail.com", "1542385478", LocalDate.of(2024, 10, 15), gestor);
 	}
 
 	@Test
@@ -33,17 +33,6 @@ class PropietarioTest {
 		propietario.agregarInmueble(inmueble);
 		
 		assertTrue(propietario.getInmuebles().contains(inmueble));
-	}
-	
-	@Test
-	void testGenerarPublicacion() {
-		SitioWebSAT sitioWeb = mock(SitioWebSAT.class);
-		Inmueble inmueble = mock(Inmueble.class);
-		List<MetodoPago> metodosPago = Arrays.asList(mock(MetodoPago.class));
-		
-		propietario.generarPublicacion(sitioWeb, inmueble, LocalTime.of(14,00), LocalTime.of(14, 00), metodosPago, 50d);
-		
-		verify(sitioWeb).altaDePublicacion(any(Publicacion.class));
 	}
 	
 	@Test
@@ -62,31 +51,14 @@ class PropietarioTest {
 	}
 	
 	@Test
-	void testCantidadDeInmueblesAlquilados() {
-		
-		assertEquals(propietario.cantidadDeInmueblesAlquilados(), 0);
+	void testCantidadInmueblesAlquilados() {
+		assertEquals(propietario.cantidadInmueblesAlquilados(), 0);
 	}
-	
+
 	@Test
-	void testAprobarReserva() {
-		Publicacion publicacion = mock(Publicacion.class);
-		Reserva reserva = mock(Reserva.class);
+	void testNoEsInquilino() {
 		
-		propietario.aprobarReserva(publicacion, reserva);
-		
-		verify(publicacion).procesarReserva(any(Reserva.class));
-	}
-	
-	@Test
-	void testEsInquilino() {
-		
-		assertFalse(propietario.esInquilino());
-	}
-	
-	@Test
-	void testCantidadReservas() {
-		
-		assertEquals(0,propietario.cantidadReservas());
+		assertFalse(propietario.tieneReservas());
 	}
 	
 	@Test 
@@ -98,5 +70,29 @@ class PropietarioTest {
 		assertEquals(LocalDate.of(2024, 10, 15), propietario.getFechaRegistro());
 	}
 	
+	@Test 
+	void testAgregarCalificacion() {
+		Calificacion calificacion = mock(Calificacion.class);
+		doNothing().when(gestor).validarCalificacion(calificacion, Entidad.PROPIETARIO);
+		
+		propietario.agregarCalificacionPropietario(calificacion);
+		
+		assertTrue(propietario.getCalificacionesPropietario().contains(calificacion));
+	}
+	
+	@Test
+	void testCalcularPromedioPropietario() {
+		propietario.calcularPromedioPropietario();
+				
+		verify(gestor).calcularPromedioGeneral(propietario.getCalificacionesPropietario());
+	}
+	
+	@Test 
+	void testCalcularPromedioCategoriaPropietario() {
+		propietario.calcularPromedioCategoriaPropietario("comunicacion");
+	
+		verify(gestor).validarCategoria("comunicacion", Entidad.PROPIETARIO);
+		verify(gestor).calcularPromedioDeCategoria("comunicacion",propietario.getCalificacionesPropietario());
+	}
 	
 }

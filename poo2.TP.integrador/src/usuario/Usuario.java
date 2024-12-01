@@ -12,7 +12,6 @@ import alquiler.Reserva;
 import enums.Entidad;
 import sistema.Calificacion;
 import sistema.GestorCalificaciones;
-import sistema.SitioWebSAT;
 
 public class Usuario implements Propietario, Inquilino {
 	private String nombre;
@@ -37,22 +36,27 @@ public class Usuario implements Propietario, Inquilino {
 	     this.calificacionesInquilino = new ArrayList<Calificacion>();
 	}
 	
+	@Override	
 	public String getNombre() {
 		return this.nombre;
 	}
 	
+	@Override
 	public String getEmail() {
 		return this.email;
 	}
 	
+	@Override
 	public String getTelefono() {
 		return this.telefono;
 	}
 	
+	@Override
 	public LocalDate getFechaRegistro() {
 		return this.fechaRegistro;
 	}
 	
+	@Override
 	public int calcularDiasDesdeRegistro() {
 		Period periodo = Period.between(fechaRegistro, LocalDate.now());
 		return periodo.getDays();
@@ -98,6 +102,22 @@ public class Usuario implements Propietario, Inquilino {
 		calificacionesInquilino.add(calificacion);	
 	}
 	
+	@Override 
+	public double calcularPromedioInquilino() {
+		return this.gestorCalificaciones.calcularPromedioGeneral(calificacionesInquilino);
+	}
+	
+	@Override
+	public double calcularPromedioCategoriaInquilino(String categoria) {
+		this.gestorCalificaciones.validarCategoria(categoria, Entidad.INQUILINO);
+		return this.gestorCalificaciones.calcularPromedioDeCategoria(categoria, calificacionesInquilino);
+	}
+	
+	@Override 
+	public List<Calificacion> getCalificacionesInquilino(){
+		return calificacionesInquilino;
+	}
+	
 	//Propietario
 
 	@Override
@@ -126,9 +146,26 @@ public class Usuario implements Propietario, Inquilino {
 		gestorCalificaciones.validarCalificacion(calificacion, Entidad.PROPIETARIO);
 		calificacionesPropietario.add(calificacion);		
 	}
+	
+	
+	@Override 
+	public double calcularPromedioPropietario() {
+		return this.gestorCalificaciones.calcularPromedioGeneral(calificacionesPropietario);
+	}
+	
+	@Override
+	public double calcularPromedioCategoriaPropietario(String categoria) {
+		this.gestorCalificaciones.validarCategoria(categoria, Entidad.PROPIETARIO);
+		return this.gestorCalificaciones.calcularPromedioDeCategoria(categoria, calificacionesPropietario);
+	}
 
+	@Override
+	public List<Calificacion> getCalificacionesPropietario() {
+		return calificacionesPropietario;
+	}
+	
+	@Override
 	public boolean tieneReservas() {
 		return !historialReservas.isEmpty();
 	} 
-	
 }

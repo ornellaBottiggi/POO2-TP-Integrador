@@ -3,23 +3,30 @@ package alquilerTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import alquiler.Inmueble;
 import alquiler.Reserva;
+import enums.Entidad;
 import enums.Servicio;
-import sistema.SitioWebSAT;
-import usuario.Calificable;
+import sistema.Calificacion;
+import sistema.GestorCalificaciones;
+
 
 class InmuebleTest {
 	private Inmueble inmueble;
-
+	private GestorCalificaciones gestorCalificaciones;
+	
 	@BeforeEach
 	void setUp() {
-		inmueble = new Inmueble("Departamento", 100d, "Argentina", "Quilmes", "Direccion 123", 3);
+		gestorCalificaciones = mock(GestorCalificaciones.class);
+		inmueble = new Inmueble("Departamento", 100d, "Argentina", "Quilmes", "Direccion 123", 3, gestorCalificaciones);
 	}
-
+		
 	@Test
 	void testAgregarServicio() {
 		Servicio wifi = mock(Servicio.class);
@@ -68,15 +75,6 @@ class InmuebleTest {
 	}
 	
 	@Test
-	void testExcepcionPorTratarDeCalificar() {
-		SitioWebSAT sitioWeb = mock(SitioWebSAT.class);
-		Reserva reserva = mock(Reserva.class);
-		Calificable propietario = mock(Calificable.class);
-		
-		assertThrows(RuntimeException.class, () -> { inmueble.calificar(sitioWeb, reserva, propietario, "", 0, ""); });
-	}
-	
-	@Test
 	void testEstaUbicadoEnUnaCiudad() {
 		assertTrue(inmueble.estaUbicadoEn("Quilmes"));
 		assertFalse(inmueble.estaUbicadoEn("Avellaneda"));
@@ -95,5 +93,30 @@ class InmuebleTest {
 		assertEquals("Argentina", inmueble.getPais());
 		assertEquals("Direccion 123", inmueble.getDireccion());
 	}
-
+	
+	@Test
+	void testAgregarCalificacion() {
+		Calificacion calificacion = mock(Calificacion.class);
+		Entidad inmuebleMock = mock(Entidad.class);
+		doNothing().when(gestorCalificaciones).validarCalificacion(calificacion, inmuebleMock);
+		
+		inmueble.agregarCalificacion(calificacion);
+		
+		assertTrue(inmueble.getCalificaciones().contains(calificacion));
+	}
+	
+	@Test 
+	void testCalcularPromedio() {
+		inmueble.calcularPromedio();
+		
+		verify(gestorCalificaciones).calcularPromedioGeneral(inmueble.getCalificaciones());
+	}
+	
+	@Test 
+	void testCalcularPromedioParaCategoria() {
+		inmueble.calcularPromedioParaCategoria("limpieza");
+		
+		verify(gestorCalificaciones).validarCategoria("limpieza", Entidad.INMUEBLE);
+		verify(gestorCalificaciones).calcularPromedioDeCategoria("limpieza", inmueble.getCalificaciones());
+	}
 }

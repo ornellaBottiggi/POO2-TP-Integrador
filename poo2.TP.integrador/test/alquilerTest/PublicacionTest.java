@@ -20,11 +20,11 @@ import cancelacion.CancelacionGratuita;
 import cancelacion.PoliticaCancelacion;
 import enums.MetodoPago;
 import notificacion.Suscriptor;
-import usuario.PropietarioClass;
+import usuario.Propietario;
 
 class PublicacionTest {
 	private Publicacion publicacion;
-	private PropietarioClass propietario;
+	private Propietario propietario;
 	private Inmueble inmueble;
 	private List<MetodoPago> formasDePago;
 	private Reserva reservaActual;
@@ -32,7 +32,7 @@ class PublicacionTest {
 
 	@BeforeEach
 	void setUp() {
-		propietario = mock(PropietarioClass.class);
+		propietario = mock(Propietario.class);
 		inmueble = mock(Inmueble.class);
 		formasDePago = Arrays.asList(mock(MetodoPago.class));
 		
@@ -95,8 +95,12 @@ class PublicacionTest {
 	
 	@Test
 	void testSubirElPrecioBase() {
-		publicacion.cambiarPrecio(150d);
+		double precioViejo = publicacion.getPrecioBase();
 		
+		publicacion.cambiarPrecio(150d);
+		double precioNuevo = publicacion.getPrecioBase();
+		
+		assertTrue(precioNuevo > precioViejo);
 		assertEquals(150d, publicacion.getPrecioBase());
 	}
 	
@@ -111,12 +115,12 @@ class PublicacionTest {
 	}
 	
 	@Test
-	void testObtenerAprobacionDelPropietario() {
+	void testRechazarReserva() {
 		Reserva reserva = mock(Reserva.class);
 		
-		publicacion.obtenerAprobacionDelPropietario(reserva);
+		publicacion.rechazarReserva(reserva);
 		
-		verify(propietario).aprobarReserva(publicacion, reserva);
+		verify(reserva).registrarRechazo();
 	}
 	
 	@Test
@@ -125,18 +129,18 @@ class PublicacionTest {
 	}
 	
 	@Test
-	void testProcesarUnaReservaConDisponibilidad() {
-		publicacion.procesarReserva(reservaActual);
+	void testAceptarUnaReservaConDisponibilidad() {
+		publicacion.aceptarReserva(reservaActual);
 		List<Reserva> reservasActuales = publicacion.getReservasActuales();
 		
 		assertTrue(reservasActuales.contains(reservaActual));
 	}
 	
 	@Test
-	void testProcesarUnaReservaSinDisponibilidad() {
-		publicacion.procesarReserva(reservaActual);
+	void testAceptarUnaReservaSinDisponibilidad() {
+		publicacion.aceptarReserva(reservaActual);
 				
-		publicacion.procesarReserva(reservaCondicional);
+		publicacion.aceptarReserva(reservaCondicional);
 		Queue<Reserva> listaDeEspera = publicacion.getListaDeEspera();
 		
 		assertTrue(listaDeEspera.contains(reservaCondicional));
@@ -144,18 +148,24 @@ class PublicacionTest {
 	
 	@Test
 	void testCancelarReserva() {
-		publicacion.procesarReserva(reservaActual);
+		PoliticaCancelacion cancelacion = mock(PoliticaCancelacion.class);
+		when(cancelacion.calcularRetencion(LocalDate.now(), reservaActual, publicacion)).thenReturn(0.0);
+		publicacion.setPoliticaCancelacion(cancelacion);
+		publicacion.aceptarReserva(reservaActual);
 		
-		publicacion.cancelarReserva(reservaActual); // cuando se cancela, se quita de las reservas actuales
+		double retencion = publicacion.cancelarReserva(reservaActual);
 		List<Reserva> reservasActuales = publicacion.getReservasActuales();
 		
-		assertFalse(reservasActuales.contains(reservaActual));
+		assertFalse(reservasActuales.contains(reservaActual)); // cuando se cancela, se quita de las reservas actuales
+		assertEquals(retencion, 0.0);
 	}
 	
 	@Test
 	void testProcesarUnaReservaEnEsperaLuegoDeQueSeCancelaraOtra() {
-		publicacion.procesarReserva(reservaActual);
-		publicacion.procesarReserva(reservaCondicional);
+		PoliticaCancelacion cancelacion = mock(PoliticaCancelacion.class);
+		publicacion.setPoliticaCancelacion(cancelacion);
+		publicacion.aceptarReserva(reservaActual);
+		publicacion.aceptarReserva(reservaCondicional);
 						
 		publicacion.cancelarReserva(reservaActual); // la reserva condicional va a tomar el lugar de la reserva actual
 		Queue<Reserva> listaDeEspera = publicacion.getListaDeEspera();
@@ -167,7 +177,7 @@ class PublicacionTest {
 	
 	@Test
 	void testFinalizarReserva() {
-		publicacion.procesarReserva(reservaActual);
+		publicacion.aceptarReserva(reservaActual);
 				
 		publicacion.finalizarReserva(reservaActual);
 		List<Reserva> reservasActuales = publicacion.getReservasActuales();
@@ -177,33 +187,13 @@ class PublicacionTest {
 	
 	@Test
 	void testFinalizarReservaLimpiandoReservasQueEstabanEnListaDeEspera() {
-		publicacion.procesarReserva(reservaActual);
-		publicacion.procesarReserva(reservaCondicional);
+		publicacion.aceptarReserva(reservaActual);
+		publicacion.aceptarReserva(reservaCondicional);
 		
 		publicacion.finalizarReserva(reservaActual);
 		Queue<Reserva> listaDeEspera = publicacion.getListaDeEspera();
 		
 		assertFalse(listaDeEspera.contains(reservaCondicional));
-	}
-	
-	@Test
-	void testExcepcionPorCalcularRetencionPorCancelacion() {
-		publicacion.procesarReserva(reservaActual);
-		when(reservaActual.estaCancelada()).thenReturn(false);
-		
-		assertThrows(RuntimeException.class, () -> { publicacion.retencionPorCancelacion(reservaActual); });
-	}
-	
-	@Test
-	void testCalcularRetencionPorCancelacion() {
-		PoliticaCancelacion cancelacion = mock(PoliticaCancelacion.class);
-		publicacion.setPoliticaCancelacion(cancelacion);
-		publicacion.procesarReserva(reservaActual);
-		when(reservaActual.estaCancelada()).thenReturn(true);
-		
-		publicacion.retencionPorCancelacion(reservaActual);
-		
-		verify(cancelacion).calcularRetencion(LocalDate.now(), reservaActual, publicacion);		
 	}
 	
 	@Test
@@ -213,7 +203,7 @@ class PublicacionTest {
 	
 	@Test
 	void testTieneReservas() {	
-		publicacion.procesarReserva(reservaActual);
+		publicacion.aceptarReserva(reservaActual);
 		assertTrue(publicacion.tieneReservas());
 	}
 	
@@ -245,7 +235,7 @@ class PublicacionTest {
 		
 		publicacion.notificarBajaDePrecio();
 		
-		verify(suscriptor).cambioDePrecio(publicacion, publicacion.getPrecioBase());
+		verify(suscriptor).cambioDePrecio(publicacion);
 	}
 	
 	@Test

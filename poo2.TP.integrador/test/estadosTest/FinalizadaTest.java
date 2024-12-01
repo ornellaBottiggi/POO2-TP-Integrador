@@ -17,7 +17,14 @@ class FinalizadaTest {
 	void setUp() {
 		finalizada = new Finalizada();
 	}
-
+	
+	@Test 
+	void testRechazarReserva() {
+		Reserva reserva = mock(Reserva.class);
+		
+		assertThrows(RuntimeException.class, () -> { finalizada.rechazar(reserva); });
+	}
+		
 	@Test
 	void testAceptarReserva() {
 		Reserva reserva = mock(Reserva.class);

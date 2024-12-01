@@ -31,7 +31,7 @@ class AplicacionTest {
 		PrintStream original = System.out;
 		System.setOut(print);
 		
-		aplicacion.cambioDePrecio(publicacion, 0);
+		aplicacion.cambioDePrecio(publicacion);
 		
 		verify(print).println("no está interesado en este evento");
 		

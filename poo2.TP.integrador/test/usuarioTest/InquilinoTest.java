@@ -13,68 +13,36 @@ import org.junit.jupiter.api.Test;
 import alquiler.Inmueble;
 import alquiler.Publicacion;
 import alquiler.Reserva;
+import enums.Entidad;
 import enums.MetodoPago;
 import sistema.Calificacion;
+import sistema.GestorCalificaciones;
 import sistema.SitioWebSAT;
-import usuario.Calificable;
-import usuario.InquilinoClass;
+import usuario.Inquilino;
+import usuario.Usuario;
 
 class InquilinoTest {
-	 private InquilinoClass inquilino;
-	 	
+	 private Inquilino inquilino;
+	 private GestorCalificaciones gestor;
+	 
 	@BeforeEach
 	void setUp() {
-		this.inquilino = new InquilinoClass("Raul", "raul@gmail.com", "1165143349", LocalDate.now());
+		gestor = mock(GestorCalificaciones.class);
+		this.inquilino = new Usuario("Raul", "raul@gmail.com", "1165143349", LocalDate.now(), gestor);
 	}
 	
 	@Test
 	void testCalcularDiasDesdeRegistro() {
-		
 		assertEquals(0, inquilino.calcularDiasDesdeRegistro());
 	}
 	
-	
-	
 	@Test
-	void testCalificar() {
-		SitioWebSAT sitioWeb = mock(SitioWebSAT.class);
-		Reserva reserva = mock(Reserva.class);
-		when(reserva.puedeCalificarse()).thenReturn(true);
-		Calificable propietario = mock(Calificable.class);
-		
-		inquilino.calificar(sitioWeb, reserva, propietario, "Comunicacion", 0,"");			
-		
-		verify(sitioWeb).registrarCalificacion(any(Calificable.class), any(Calificacion.class));
-	}
-	
-	@Test
-	void testExcepcionCalificar() {
-		SitioWebSAT sitioWeb = mock(SitioWebSAT.class);
-		Reserva reserva = mock(Reserva.class);
-		when(reserva.puedeCalificarse()).thenReturn(false);
-		Calificable propietario = mock(Calificable.class);
-		
-		assertThrows(RuntimeException.class, () -> { inquilino.calificar(sitioWeb, reserva, propietario, "Comunicacion", 0, ""); });
-	}
-	
-	@Test 
-	void testRealizarReserva() {
-		Publicacion publicacion = mock(Publicacion.class);
-		when(publicacion.getInmueble()).thenReturn(mock(Inmueble.class));
-		MetodoPago tarjetaCredito = mock(MetodoPago.class);
-		
-		inquilino.realizarReserva(publicacion, LocalDate.of(2025, 1, 10) ,LocalDate.of(2025, 1, 20), tarjetaCredito);
-		
-		verify(publicacion).obtenerAprobacionDelPropietario(any(Reserva.class));
-	}
-	
-	@Test
-	void testAgregarHistorial() {
+	void testAgregarReserva() {
 		Reserva reserva = mock(Reserva.class);
 		
-		inquilino.agregarAHistorial(reserva);
+		inquilino.agregarReserva(reserva);
 		
-		assertTrue(inquilino.obtenerReservas().contains(reserva));
+		assertTrue(inquilino.getReservas().contains(reserva));
 	}
 	
 	@Test
@@ -84,8 +52,8 @@ class InquilinoTest {
 		Reserva reserva2 = mock(Reserva.class);
 		when(reserva2.estaEnCiudad("Quilmes")).thenReturn(true);
 		
-		inquilino.agregarAHistorial(reserva1);
-		inquilino.agregarAHistorial(reserva2);
+		inquilino.agregarReserva(reserva1);
+		inquilino.agregarReserva(reserva2);
 		
 		List<Reserva> reservas = inquilino.obtenerReservasEnCiudad("Quilmes");
 				
@@ -99,7 +67,7 @@ class InquilinoTest {
 		when(reserva.getInmueble().getCiudad()).thenReturn("Quilmes");
 		
 		
-		inquilino.agregarAHistorial(reserva);
+		inquilino.agregarReserva(reserva);
 		
 		Set<String> ciudades = inquilino.obtenerCiudadesConReserva();
 		
@@ -113,8 +81,8 @@ class InquilinoTest {
 		Reserva reserva2 = mock(Reserva.class);
 		when(reserva2.esPosteriorA(LocalDate.now())).thenReturn(true);
 		
-		inquilino.agregarAHistorial(reserva1);
-		inquilino.agregarAHistorial(reserva2);
+		inquilino.agregarReserva(reserva1);
+		inquilino.agregarReserva(reserva2);
 		
 		List<Reserva> reservasFuturas = inquilino.obtenerReservasFuturas();
 		
@@ -123,15 +91,40 @@ class InquilinoTest {
 	
 	@Test
 	void testEsInquilino() {
+		Reserva reserva = mock(Reserva.class);
 		
-		assertTrue(inquilino.esInquilino());
+		inquilino.agregarReserva(reserva);
+		
+		assertTrue(inquilino.tieneReservas());
 	}
 	
 	@Test
-	void testCantidadReservas() {
-		
+	void testCantidadReservas() {	
 		assertEquals(0,inquilino.cantidadReservas());
 	}
 	
+	@Test 
+	void testAgregarCalificacion() {
+		Calificacion calificacion = mock(Calificacion.class);
+		doNothing().when(gestor).validarCalificacion(calificacion, Entidad.INQUILINO);
+		
+		inquilino.agregarCalificacionInquilino(calificacion);
+		
+		assertTrue(inquilino.getCalificacionesInquilino().contains(calificacion));
+	}
 	
+	@Test
+	void testCalcularPromedioInquilino() {
+		inquilino.calcularPromedioInquilino();
+				
+		verify(gestor).calcularPromedioGeneral(inquilino.getCalificacionesInquilino());
+	}
+	
+	@Test 
+	void testCalcularPromedioCategoriaInquilino() {
+		inquilino.calcularPromedioCategoriaInquilino("amabilidad");
+	
+		verify(gestor).validarCategoria("amabilidad", Entidad.INQUILINO);
+		verify(gestor).calcularPromedioDeCategoria("amabilidad",inquilino.getCalificacionesInquilino());
+	}
 }

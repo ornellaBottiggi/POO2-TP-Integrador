@@ -12,18 +12,18 @@ import alquiler.Inmueble;
 import alquiler.Reserva;
 import enums.MetodoPago;
 import estados.EstadoReserva;
-import usuario.InquilinoClass;
+import usuario.Inquilino;
 
 class ReservaTest {
 	private Reserva reserva;
 	private EstadoReserva pendiente;
 	private Inmueble inmueble;
-	private InquilinoClass inquilino;
+	private Inquilino inquilino;
 	private MetodoPago efectivo;
 
 	@BeforeEach
 	void setUp() {
-		inquilino = mock(InquilinoClass.class);
+		inquilino = mock(Inquilino.class);
 		inmueble = mock(Inmueble.class);
 		efectivo = mock(MetodoPago.class);
 		// mock para poder testear que le llegan los mensajes al estado de la reserva.
@@ -106,6 +106,13 @@ class ReservaTest {
 	void testGetters() {
 		assertEquals(inquilino, reserva.getInquilino());
 		assertEquals(efectivo, reserva.getFormaDePago());
+	}
+	
+	@Test 
+	void testRegistrarRechazo() {
+		reserva.registrarRechazo();
+		
+		verify(pendiente).rechazar(reserva);
 	}
 	
 }

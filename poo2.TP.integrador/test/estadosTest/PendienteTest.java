@@ -11,6 +11,7 @@ import alquiler.Reserva;
 import estados.Aceptada;
 import estados.EstadoReserva;
 import estados.Pendiente;
+import estados.Rechazada;
 
 class PendienteTest {
 	private EstadoReserva pendiente;
@@ -19,7 +20,16 @@ class PendienteTest {
 	void setUp() {	
 		pendiente = new Pendiente();		
 	}
-
+	
+	@Test 
+	void testRechazarReserva() {
+		Reserva reserva = mock(Reserva.class);
+		
+		pendiente.rechazar(reserva);	
+	
+		verify(reserva).setEstado(any(Rechazada.class));	
+	}
+	
 	@Test
 	void testAceptarReserva() {
 		Inmueble inmueble = mock(Inmueble.class);

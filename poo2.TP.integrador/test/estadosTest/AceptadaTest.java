@@ -21,6 +21,13 @@ class AceptadaTest {
 		aceptada = new Aceptada();
 	}
 
+	@Test 
+	void testRechazarReserva() {
+		Reserva reserva = mock(Reserva.class);
+	
+		assertThrows(RuntimeException.class, () -> { aceptada.rechazar(reserva); });
+	}
+		
 	@Test
 	void testAceptarReserva() {
 		Reserva reserva = mock(Reserva.class);

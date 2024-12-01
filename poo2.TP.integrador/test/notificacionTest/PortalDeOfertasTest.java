@@ -30,9 +30,10 @@ class PortalDeOfertasTest {
 		Publicacion publicacion = mock(Publicacion.class);
 		Inmueble inmueble = mock(Inmueble.class);
 		when(publicacion.getInmueble()).thenReturn(inmueble);
+		when(publicacion.getPrecioBase()).thenReturn(50.0);
 		when(inmueble.getTipoInmueble()).thenReturn("habitacion");
 		
-		portalDeOfertas.cambioDePrecio(publicacion, 50d);
+		portalDeOfertas.cambioDePrecio(publicacion);
 		String mensaje = "No te pierdas esta oferta: Un inmueble habitacion a tan solo 50.0 pesos.";
 				
 		verify(publisher).publish(mensaje);

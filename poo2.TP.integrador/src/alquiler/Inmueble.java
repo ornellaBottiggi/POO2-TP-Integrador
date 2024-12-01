@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.mockito.ArgumentMatchers;
+
 import enums.Entidad;
 import enums.Servicio;
 import sistema.Calificacion;
@@ -73,6 +75,10 @@ public class Inmueble {
 		return this.vecesAlquilado;
 	}
 	
+	public List<Calificacion> getCalificaciones() {
+		return calificaciones;
+	}
+	
 	public void agregarServicio(Servicio servicio) {
 		this.getServicios().add(servicio);
 	}
@@ -109,5 +115,15 @@ public class Inmueble {
 		this.gestorCalificaciones.validarCalificacion(calificacion, Entidad.INMUEBLE);
 		calificaciones.add(calificacion);
 	}
+	
+	public double calcularPromedio() {
+		return gestorCalificaciones.calcularPromedioGeneral(calificaciones);
+	}
+	
+	public double calcularPromedioParaCategoria(String categoria) {
+		this.gestorCalificaciones.validarCategoria(categoria, Entidad.INMUEBLE);
+		return gestorCalificaciones.calcularPromedioDeCategoria(categoria, calificaciones);
+	}
 
+	
 }

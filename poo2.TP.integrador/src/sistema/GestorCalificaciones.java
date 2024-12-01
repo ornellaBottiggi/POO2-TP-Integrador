@@ -38,5 +38,11 @@ public class GestorCalificaciones {
 				.mapToInt(calificacion -> calificacion.getPuntaje())
 				.average().orElse(0.0);
 	}
+
+	public void validarCategoria(String categoria, Entidad entidad) {
+		if (!this.sitioWeb.esCategoriaValida(categoria, entidad)) {
+			throw new RuntimeException("La categoria no es válida.");
+		}
+	}
 	
 }
